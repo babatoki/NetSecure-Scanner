@@ -193,3 +193,42 @@ Potential future versions of NetSecure Scanner could include:
 NetSecure Scanner is intended for authorized security testing, cybersecurity education, and controlled laboratory environments.
 
 Do not use this tool to scan systems or networks without explicit authorization.
+## Evidence
+
+The assessment included documented evidence from reconnaissance, enumeration, and web application security testing.
+
+### Web Enumeration
+
+Initial web enumeration was performed against the target web service.
+
+![Web Enumeration](screenshots/reconnaissance/01-web-enumeration.png)
+
+### PHP Information Disclosure
+
+The assessment identified accessible PHP configuration information.
+
+![PHP Information Disclosure](screenshots/enumeration/02-phpinfo.png)
+
+### Directory Listing
+
+Directory listing behavior was identified during web enumeration.
+
+![Directory Listing](screenshots/enumeration/03-directory-listing.png)
+
+### SQL Injection
+
+SQL injection testing was performed against the deliberately vulnerable DVWA application.
+
+![SQL Injection](screenshots/findings/04-sql-injection.png)
+
+### Reflected XSS
+
+Reflected cross-site scripting testing was performed against the vulnerable application.
+
+![Reflected XSS](screenshots/findings/05-reflected-xss.png)
+
+### Session Testing
+
+Session and logout behavior was also assessed as part of the application security review.
+
+![Session Testing](screenshots/findings/06-session-logout.png)
