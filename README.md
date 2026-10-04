@@ -1,94 +1,193 @@
-# Web Application Security Assessment — DVWA
+# NetSecure Scanner
+
+A Python-based TCP port scanning and security assessment tool developed in an isolated cybersecurity laboratory environment.
 
 ## Overview
 
-A controlled web application security assessment performed against Damn Vulnerable Web Application (DVWA) running on an isolated Metasploitable 2 virtual machine. The project demonstrates reconnaissance, web enumeration, vulnerability validation, evidence collection, risk assessment, and remediation recommendations.
+NetSecure Scanner is a lightweight security assessment tool designed to identify exposed TCP services, classify potential risk, collect basic service banners, and generate structured security reports.
 
-> **Scope:** Isolated lab environment only. The target was a deliberately vulnerable application designed for security training.
+The project was developed and tested against a deliberately vulnerable **Metasploitable 2** virtual machine from a Kali Linux environment.
 
-## Environment
+> **Important:** This project is intended for authorized security testing and controlled laboratory environments only.
 
-- **Testing platform:** Kali Linux
-- **Target:** Metasploitable 2
-- **Application:** DVWA
-- **Target IP:** 192.168.56.101
-- **Tools used:** Nmap, cURL, browser/DVWA
+## Features
 
-## Methodology
+- TCP port scanning
+- Target IP/hostname resolution
+- Service identification
+- Basic service banner/version detection
+- Security risk classification
+- Security findings and recommendations
+- Timestamped TXT security reports
+- CSV report generation
+- Command-line interface
+- Configurable port selection
 
-1. Verified connectivity between Kali Linux and the target.
-2. Performed service/version discovery with Nmap.
-3. Enumerated HTTP services and exposed directories.
-4. Validated information-disclosure and web-application findings.
-5. Tested SQL injection and reflected XSS within DVWA.
-6. Captured screenshots as evidence.
-7. Assessed impact and documented remediation recommendations.
+## Technologies
 
-## Findings
+- Python 3
+- Kali Linux
+- Nmap
+- cURL
+- Metasploitable 2
+- VirtualBox
 
-| ID | Finding | Severity | Status |
-|---|---|---|---|
-| F-01 | Directory listing enabled at `/doc/` | Medium | Confirmed |
-| F-02 | PHP information disclosure at `/phpinfo.php` | Medium | Confirmed |
-| F-03 | phpMyAdmin exposed | Medium | Confirmed exposure; vulnerability not claimed |
-| F-04 | SQL Injection in DVWA | High | Confirmed |
-| F-05 | Reflected Cross-Site Scripting (XSS) | Medium | Confirmed |
+## Lab Environment
 
-## F-01 — Directory Listing
+| Component | Role |
+|---|---|
+| Kali Linux | Security testing workstation |
+| Metasploitable 2 | Deliberately vulnerable target |
+| VirtualBox | Virtualization platform |
+| Network | Isolated host-only laboratory network |
 
-The `/doc/` endpoint returned an `Index of /doc/` page and exposed directory contents.
+### Target
 
-**Impact:** Application structure and files may become available to an attacker, supporting further reconnaissance.
+`192.168.56.101`
 
-**Remediation:** Disable directory indexing and explicitly restrict publicly accessible files/directories.
+## Usage
 
-## F-02 — PHP Information Disclosure
+Run the scanner with:
 
-The publicly accessible `/phpinfo.php` endpoint disclosed PHP and operating-system details.
+```bash
+python3 scanner.py 192.168.56.101
+```
 
-**Impact:** Technology and configuration information can help an attacker fingerprint the environment and research applicable vulnerabilities.
+Specify custom ports:
 
-**Remediation:** Remove or restrict `phpinfo.php` in production and avoid exposing unnecessary platform/configuration details.
+```bash
+python3 scanner.py 192.168.56.101 -p 22,80,3306,8180
+```
 
-## F-03 — phpMyAdmin Exposure
+View available options:
 
-The `/phpMyAdmin/` administrative interface was reachable over HTTP.
+```bash
+python3 scanner.py --help
+```
 
-**Impact:** Exposed administration interfaces increase attack surface and should not normally be publicly reachable.
+## Example Assessment
 
-**Remediation:** Restrict access using network controls, VPN/private access, strong authentication, and appropriate administrative access policies.
+The scanner identified four open services on the laboratory target:
 
-## F-04 — SQL Injection
+| Port | Service | Risk |
+|---:|---|---|
+| 22 | SSH | Medium |
+| 80 | HTTP | Medium |
+| 3306 | MySQL | High |
+| 8180 | Tomcat | High |
 
-DVWA accepted the test input `1' OR '1'='1' #` and returned multiple database records, demonstrating SQL injection in the deliberately vulnerable application.
+### Service Information
 
-**OWASP:** A03:2021 — Injection
+- **22/tcp:** OpenSSH 4.7p1
+- **80/tcp:** Apache 2.2.8
+- **3306/tcp:** MySQL
+- **8180/tcp:** Apache Tomcat/Coyote
 
-**Impact:** SQL injection can permit manipulation of database queries and potentially unauthorized access to data, depending on database privileges and application design.
+## Risk Assessment
 
-**Remediation:** Use parameterized queries/prepared statements, validate input, apply least-privilege database permissions, suppress detailed database errors, and include injection testing in the SDLC.
+### High Risk
 
-## F-05 — Reflected XSS
+**MySQL — Port 3306**
 
-The DVWA reflected-XSS function executed the test payload `<script>alert('XSS')</script>` in the browser and produced a JavaScript alert.
+A database service is directly exposed to the network.
 
-**OWASP:** A03:2021 — Injection
+**Recommendation:** Restrict database access to authorized systems and hosts and review authentication and network-access controls.
 
-**Impact:** Reflected XSS can allow attacker-controlled JavaScript to execute in a victim's browser and may support phishing, unauthorized actions, or session-related attacks depending on application protections.
+**Tomcat — Port 8180**
 
-**Remediation:** Apply context-appropriate output encoding, validate input where appropriate, implement a strong Content Security Policy, and avoid inserting untrusted data directly into HTML/JavaScript contexts.
+A web application server is exposed to the network.
 
-## Key Learning Outcomes
+**Recommendation:** Restrict access where possible and review the Tomcat configuration, authentication, and exposed applications.
 
-- Network and web-service reconnaissance
-- HTTP response/header analysis
-- Web application attack-surface enumeration
-- SQL injection validation
-- Reflected XSS validation
-- Security evidence collection
-- Risk and impact assessment
-- Vulnerability remediation planning
+### Medium Risk
 
-## Evidence
+**SSH — Port 22**
 
-Screenshots supporting the assessment are stored in the `evidence/` directory.
+Remote administration is available.
+
+**Recommendation:** Restrict SSH access to trusted hosts and use strong authentication.
+
+**HTTP — Port 80**
+
+A web service is available without HTTPS encryption.
+
+**Recommendation:** Use HTTPS where appropriate and restrict unnecessary access to the web service.
+
+## Reporting
+
+Each scan automatically generates:
+
+- A human-readable TXT report
+- A CSV report suitable for spreadsheet analysis
+
+Reports are stored in the `reports/` directory.
+
+Example:
+
+```text
+reports/
+├── scan_192.168.56.101_YYYYMMDD_HHMMSS.txt
+└── scan_192.168.56.101_YYYYMMDD_HHMMSS.csv
+```
+
+## Validation
+
+The results were validated against Nmap service detection.
+
+Example:
+
+```bash
+nmap -sV -p 22,80,3306,8180 192.168.56.101
+```
+
+The purpose of the comparison was to evaluate whether the custom scanner identified the same exposed services as an established security scanning tool.
+
+## Project Structure
+
+```text
+NetSecure-Scanner/
+├── scanner.py
+├── README.md
+├── REPORT.md
+├── reports/
+│   ├── TXT reports
+│   └── CSV reports
+└── screenshots/
+    ├── reconnaissance
+    ├── enumeration
+    └── findings
+```
+
+## Limitations
+
+NetSecure Scanner is an educational security assessment tool and is not intended to replace professional vulnerability scanners.
+
+Current limitations include:
+
+- Limited service fingerprinting
+- Basic banner detection
+- TCP scanning only
+- No UDP scanning
+- No automated vulnerability exploitation
+- Risk classifications are based on predefined rules
+
+## Future Improvements
+
+Potential future development includes:
+
+- UDP scanning
+- Improved service fingerprinting
+- CVE correlation
+- JSON reporting
+- HTML reporting
+- Configurable risk profiles
+- Improved banner detection
+- Multi-target scanning
+- Logging and scan history
+- Integration with vulnerability databases
+
+## Ethical Use
+
+This tool should only be used against systems for which the tester has explicit authorization.
+
+The laboratory testing in this project was conducted against an intentionally vulnerable Metasploitable 2 virtual machine in an isolated environment.

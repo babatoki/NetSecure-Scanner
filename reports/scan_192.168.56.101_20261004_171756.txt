@@ -1,0 +1,20 @@
+NetSecure Scanner v3 - Security Assessment Report
+============================================================
+Target: 192.168.56.101
+Resolved IP: 192.168.56.101
+Scan Time: 2026-10-04 17:17:56
+============================================================
+
+OPEN PORTS
+------------------------------------------------------------
+Port: 22 | Service: SSH | Risk: MEDIUM
+Port: 80 | Service: HTTP | Risk: MEDIUM
+Port: 3306 | Service: MySQL | Risk: HIGH
+Port: 8180 | Service: TOMCAT | Risk: HIGH
+
+SECURITY SUMMARY
+------------------------------------------------------------
+HIGH: 2
+MEDIUM: 2
+LOW: 0
+Total Open Ports: 4

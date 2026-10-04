@@ -1,0 +1,35 @@
+NetSecure Scanner v4
+Security Assessment Report
+======================================================================
+Target: 192.168.56.101
+Resolved IP: 192.168.56.101
+Scan Time: 2026-10-04 17:21:38
+======================================================================
+
+OPEN PORTS
+----------------------------------------------------------------------
+Port: 22 | Service: SSH | Risk: MEDIUM
+Reason: Remote administration service exposed.
+
+Port: 80 | Service: HTTP | Risk: MEDIUM
+Reason: Web service exposed without HTTPS.
+
+Port: 3306 | Service: MySQL | Risk: HIGH
+Reason: Database service exposed to the network.
+
+Port: 8180 | Service: TOMCAT | Risk: HIGH
+Reason: Web application server exposed.
+
+SECURITY SUMMARY
+----------------------------------------------------------------------
+HIGH: 2
+MEDIUM: 2
+LOW: 0
+Total Open Ports: 4
+
+RECOMMENDATIONS
+----------------------------------------------------------------------
+Port 22 (SSH): Use strong authentication and restrict SSH access to trusted hosts.
+Port 80 (HTTP): Consider HTTPS and restrict unnecessary network access.
+Port 3306 (MySQL): Restrict access to trusted hosts and review the service configuration.
+Port 8180 (TOMCAT): Restrict access to trusted hosts and review the service configuration.
