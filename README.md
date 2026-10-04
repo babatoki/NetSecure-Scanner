@@ -1,146 +1,144 @@
-# NetSecure Scanner
-
-A Python-based TCP port scanning and security assessment tool developed in an isolated cybersecurity laboratory environment.
+# NetSecure Scanner — Web Application Security Assessment
 
 ## Overview
 
-NetSecure Scanner is a lightweight security assessment tool designed to identify exposed TCP services, classify potential risk, collect basic service banners, and generate structured security reports.
+NetSecure Scanner is a Python-based security assessment tool developed in a controlled cybersecurity laboratory environment. The project combines custom Python development with industry-standard security tools to identify exposed network services, perform service enumeration, classify security risks, and generate structured assessment reports.
 
-The project was developed and tested against a deliberately vulnerable **Metasploitable 2** virtual machine from a Kali Linux environment.
+The assessment was performed against a deliberately vulnerable Metasploitable 2 virtual machine hosting services including SSH, HTTP, MySQL, and Apache Tomcat.
 
-> **Important:** This project is intended for authorized security testing and controlled laboratory environments only.
+> **Disclaimer:** This project was performed exclusively against intentionally vulnerable systems in an isolated laboratory environment for educational and authorized security testing purposes.
 
-## Features
+## Objectives
 
-- TCP port scanning
-- Target IP/hostname resolution
-- Service identification
-- Basic service banner/version detection
-- Security risk classification
-- Security findings and recommendations
-- Timestamped TXT security reports
-- CSV report generation
-- Command-line interface
-- Configurable port selection
+- Identify open TCP ports on a target system.
+- Determine the services associated with exposed ports.
+- Perform service and version enumeration.
+- Identify potentially risky network services.
+- Classify findings according to risk level.
+- Generate human-readable and CSV security reports.
+- Document reconnaissance and enumeration results.
+- Demonstrate practical penetration-testing methodology.
 
-## Technologies
+## Technologies & Tools
 
-- Python 3
-- Kali Linux
-- Nmap
-- cURL
-- Metasploitable 2
-- VirtualBox
+| Technology | Purpose |
+|---|---|
+| Python 3 | Custom security scanner development |
+| Kali Linux | Security testing environment |
+| Nmap | Port and service enumeration |
+| cURL | Web service testing |
+| DVWA | Web application security testing |
+| Metasploitable 2 | Intentionally vulnerable target |
+| Git/GitHub | Version control and portfolio documentation |
 
 ## Lab Environment
 
-| Component | Role |
-|---|---|
-| Kali Linux | Security testing workstation |
-| Metasploitable 2 | Deliberately vulnerable target |
-| VirtualBox | Virtualization platform |
-| Network | Isolated host-only laboratory network |
+The assessment was conducted using isolated virtual machines.
 
-### Target
+**Testing machine:**
+- Kali Linux
+- Python 3
+- Nmap
+- cURL
 
-`192.168.56.101`
+**Target machine:**
+- Metasploitable 2
+- IP address: `192.168.56.101`
 
-## Usage
+The target was intentionally configured with vulnerable and exposed services for security testing.
 
-Run the scanner with:
+## NetSecure Scanner
+
+The custom scanner performs basic TCP port discovery and produces structured security findings.
+
+Example:
 
 ```bash
 python3 scanner.py 192.168.56.101
 ```
 
-Specify custom ports:
+A custom port range can also be supplied:
 
 ```bash
-python3 scanner.py 192.168.56.101 -p 22,80,3306,8180
+python3 scanner.py -p 22,80,443,3306,8180 192.168.56.101
 ```
 
-View available options:
+Display the available options:
 
 ```bash
 python3 scanner.py --help
 ```
 
-## Example Assessment
+## Assessment Results
 
-The scanner identified four open services on the laboratory target:
+The assessment identified four open TCP ports:
 
 | Port | Service | Risk |
 |---:|---|---|
 | 22 | SSH | Medium |
 | 80 | HTTP | Medium |
 | 3306 | MySQL | High |
-| 8180 | Tomcat | High |
+| 8180 | Apache Tomcat | High |
 
-### Service Information
+### Service Enumeration
 
-- **22/tcp:** OpenSSH 4.7p1
-- **80/tcp:** Apache 2.2.8
-- **3306/tcp:** MySQL
-- **8180/tcp:** Apache Tomcat/Coyote
+Nmap service enumeration identified:
 
-## Risk Assessment
+- **22/tcp** — OpenSSH 4.7p1
+- **80/tcp** — Apache HTTP Server 2.2.8
+- **3306/tcp** — MySQL 5.0.51a
+- **8180/tcp** — Apache Tomcat/Coyote 1.1
 
-### High Risk
+## Security Findings
 
-**MySQL — Port 3306**
+### Medium — SSH Exposed
 
-A database service is directly exposed to the network.
+Port 22 was accessible over the network, exposing a remote administration service.
 
-**Recommendation:** Restrict database access to authorized systems and hosts and review authentication and network-access controls.
+**Security consideration:** SSH should be restricted to trusted management networks where possible, with strong authentication and appropriate access controls.
 
-**Tomcat — Port 8180**
+### Medium — HTTP Without HTTPS
 
-A web application server is exposed to the network.
+Port 80 exposed an HTTP web service without encrypted HTTPS communication.
 
-**Recommendation:** Restrict access where possible and review the Tomcat configuration, authentication, and exposed applications.
+**Security consideration:** Sensitive web traffic should use HTTPS with modern TLS configurations.
 
-### Medium Risk
+### High — MySQL Exposed
 
-**SSH — Port 22**
+Port 3306 exposed a database service directly to the network.
 
-Remote administration is available.
+**Security consideration:** Database services should generally be restricted to authorized application or administration networks rather than exposed broadly.
 
-**Recommendation:** Restrict SSH access to trusted hosts and use strong authentication.
+### High — Apache Tomcat Exposed
 
-**HTTP — Port 80**
+Port 8180 exposed an Apache Tomcat web application server.
 
-A web service is available without HTTPS encryption.
-
-**Recommendation:** Use HTTPS where appropriate and restrict unnecessary access to the web service.
+**Security consideration:** Application-management interfaces should be restricted, securely configured, patched, and protected against unauthorized access.
 
 ## Reporting
 
-Each scan automatically generates:
+The scanner generates both text and CSV reports.
 
-- A human-readable TXT report
-- A CSV report suitable for spreadsheet analysis
-
-Reports are stored in the `reports/` directory.
-
-Example:
+Example report structure:
 
 ```text
 reports/
-├── scan_192.168.56.101_YYYYMMDD_HHMMSS.txt
-└── scan_192.168.56.101_YYYYMMDD_HHMMSS.csv
+├── scan_192.168.56.101_20261004_171756.txt
+├── scan_192.168.56.101_20261004_172138.txt
+├── scan_192.168.56.101_20261004_172400.txt
+├── scan_192.168.56.101_20261004_172735.txt
+└── scan_192.168.56.101_20261004_172735.csv
 ```
 
-## Validation
+The reports document:
 
-The results were validated against Nmap service detection.
-
-Example:
-
-```bash
-nmap -sV -p 22,80,3306,8180 192.168.56.101
-```
-
-The purpose of the comparison was to evaluate whether the custom scanner identified the same exposed services as an established security scanning tool.
+- Target information
+- Scan timestamp
+- Open ports
+- Detected services
+- Risk classifications
+- Security findings
+- Service banners/versions
 
 ## Project Structure
 
@@ -150,44 +148,48 @@ NetSecure-Scanner/
 ├── README.md
 ├── REPORT.md
 ├── reports/
-│   ├── TXT reports
-│   └── CSV reports
+│   ├── *.txt
+│   └── *.csv
 └── screenshots/
-    ├── reconnaissance
-    ├── enumeration
-    └── findings
+    ├── reconnaissance/
+    ├── enumeration/
+    └── findings/
 ```
 
-## Limitations
+## Skills Demonstrated
 
-NetSecure Scanner is an educational security assessment tool and is not intended to replace professional vulnerability scanners.
+This project demonstrates practical experience with:
 
-Current limitations include:
-
-- Limited service fingerprinting
-- Basic banner detection
-- TCP scanning only
-- No UDP scanning
-- No automated vulnerability exploitation
-- Risk classifications are based on predefined rules
+- Network reconnaissance
+- TCP port scanning
+- Service enumeration
+- Vulnerability identification
+- Risk assessment
+- Web application security testing
+- Linux security tooling
+- Python scripting
+- Security documentation
+- CSV/text report generation
+- Git and GitHub
+- Virtualized cybersecurity laboratories
 
 ## Future Improvements
 
-Potential future development includes:
+Potential future versions of NetSecure Scanner could include:
 
-- UDP scanning
-- Improved service fingerprinting
-- CVE correlation
-- JSON reporting
-- HTML reporting
-- Configurable risk profiles
-- Improved banner detection
-- Multi-target scanning
-- Logging and scan history
-- Integration with vulnerability databases
+- Multi-threaded scanning
+- Configurable port ranges
+- Banner grabbing improvements
+- CVE mapping
+- Automated vulnerability database lookups
+- JSON report generation
+- Improved risk scoring
+- Web-based reporting dashboard
+- Automated Nmap integration
+- Authentication and credential auditing modules
 
 ## Ethical Use
 
-This tool should only be used against systems for which the tester has explicit authorization.
+NetSecure Scanner is intended for authorized security testing, cybersecurity education, and controlled laboratory environments.
 
-The laboratory testing in this project was conducted against an intentionally vulnerable Metasploitable 2 virtual machine in an isolated environment.
+Do not use this tool to scan systems or networks without explicit authorization.
