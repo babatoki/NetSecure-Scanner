@@ -27,7 +27,6 @@ The assessment was performed against a deliberately vulnerable Metasploitable 2 
 | Kali Linux | Security testing environment |
 | Nmap | Port and service enumeration |
 | cURL | Web service testing |
-| DVWA | Web application security testing |
 | Metasploitable 2 | Intentionally vulnerable target |
 | Git/GitHub | Version control and portfolio documentation |
 
@@ -214,21 +213,3 @@ The assessment identified accessible PHP configuration information.
 Directory listing behavior was identified during web enumeration.
 
 ![Directory Listing](screenshots/enumeration/03-directory-listing.png)
-
-### SQL Injection
-
-SQL injection testing was performed against the deliberately vulnerable DVWA application.
-
-![SQL Injection](screenshots/findings/04-sql-injection.png)
-
-### Reflected XSS
-
-Reflected cross-site scripting testing was performed against the vulnerable application.
-
-![Reflected XSS](screenshots/findings/05-reflected-xss.png)
-
-### Session Testing
-
-Session and logout behavior was also assessed as part of the application security review.
-
-![Session Testing](screenshots/findings/06-session-logout.png)
